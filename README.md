@@ -32,6 +32,28 @@ This isn't a standard classification task. It's **survival probability estimatio
 - **Isotonic calibration** to correct probability skew from the boosted models
 - **Ensemble blending** across model variants and horizons for the final submission
 
+## 🔍 How the Model Actually Works
+
+In plain terms — here's what happens when a wildfire event is fed into the pipeline:
+
+**1. Input: the first 5 hours only.**
+The model never sees how the fire actually played out. It only gets early signals — how fast the fire was spreading, wind and weather conditions, how close it already was to populated zones, and terrain features like vegetation and slope. This mimics a real emergency-response scenario, where decisions have to be made early, not in hindsight.
+
+**2. Two different models look at the same problem, from different angles.**
+- **GBSA (Gradient Boosted Survival Analysis)** is built specifically for "time-to-event" problems — instead of just predicting yes/no, it estimates *when* a threat is likely to happen, which fits naturally with our 12h/24h/48h/72h horizons.
+- **LightGBM** takes a more standard approach: a separate classifier trained per horizon, predicting the probability of threat by that specific time.
+
+Running both lets us cross-check: if they agree, we trust the prediction more; if they disagree, that's often a sign of a genuinely uncertain case.
+
+**3. Calibration — making the probabilities actually mean what they say.**
+Raw model outputs from boosted trees tend to be overconfident or skewed — a "0.9" doesn't always mean a 90% real-world chance. **Isotonic calibration** is a post-processing step that reshapes these raw scores so a predicted probability of 0.7 genuinely corresponds to roughly 70% of similar cases being true threats. This matters a lot for a safety-relevant task like this — decision-makers need probabilities they can actually trust.
+
+**4. Ensemble blending — combining strengths.**
+The final prediction isn't from a single model. It's a blended combination of the GBSA and LightGBM outputs (after calibration), weighted per horizon. This smooths out the individual weaknesses of either model and was, in testing, more stable than any single model alone — which is why the final submission (`v6`) has a noticeably tighter, more consistent probability spread than earlier iterations (see the table below).
+
+**5. Output: four probabilities per fire event.**
+For every wildfire event, the model outputs four numbers — the probability it threatens an evacuation zone within 12h, 24h, 48h, and 72h. These probabilities generally increase over time (a fire has more opportunity to spread the longer it burns), and this pattern shows up consistently across all our iterations.
+
 ## 📊 Iteration Summary
 
 Predicted-probability profile across pipeline iterations, leading to the final submission:
