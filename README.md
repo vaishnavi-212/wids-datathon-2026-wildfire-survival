@@ -92,6 +92,11 @@ git clone https://github.com/vaishnavi-212/wids-datathon-2026-wildfire-survival.
 cd wids-datathon-2026-wildfire-survival
 pip install -r requirements.txt
 ```
+## 🎥 Website Preview
+
+<img src="./website-preview.png" alt="Website Preview" width="100%">
+
+🌐 [Click here to visit the full project site](https://sites.google.com/kletech.ac.in/klevibecoders/about-project)
 
 ## 👥 Team
 
