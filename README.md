@@ -77,21 +77,15 @@ Predicted-probability profile across pipeline iterations, leading to the final s
 ## 📁 Repo Structure
 
 ```
-notebooks/     EDA and model development notebooks
-src/           Feature engineering, training, calibration, ensembling scripts
-submissions/
-  └── final_submission.csv   ← v6, the submitted model
-docs/
-  └── model_comparison.md    ← extended notes on all variants
+final_submission.csv     ← v6, the final submitted predictions
+website-preview.png      Preview image used in this README
+website-preview.mp4      Project demo video
+LICENSE                  MIT License
+README.md
 ```
 
-## 🚀 Running Locally
+> Note: this repo contains the final submission and project media. The notebooks/scripts used to build the pipeline (feature engineering, GBSA + LightGBM training, calibration, ensembling) aren't included here — see the [full project writeup](https://sites.google.com/kletech.ac.in/klevibecoders/about-project) for methodology details.
 
-```bash
-git clone https://github.com/vaishnavi-212/wids-datathon-2026-wildfire-survival.git
-cd wids-datathon-2026-wildfire-survival
-pip install -r requirements.txt
-```
 ## 🎥 Website Preview
 
 <img src="./website-preview.png" alt="Website Preview" width="100%">
@@ -110,3 +104,9 @@ Released under the [MIT License](LICENSE).
 
 - [Project site with full EDA & findings](https://sites.google.com/kletech.ac.in/klevibecoders/about-project)
 - [WiDS Datathon](https://www.widsconference.org/datathon.html)
+
+<div align="center">
+
+**⭐ If you found this project useful, consider giving it a star!**
+
+</div>
