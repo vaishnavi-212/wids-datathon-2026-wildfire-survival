@@ -17,3 +17,8 @@ data/raw/
 .DS_Store
 .vscode/
 .idea/
+
+# Competition data (do not upload)
+train.csv
+test.csv
+submission_rank*.csv
