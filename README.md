@@ -6,7 +6,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://www.python.org/)
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/vaishnavi-212/wids-datathon-2026-wildfire-survival/blob/main/notebooks/vsub6_gbsa_lightgbm_pipeline.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/vaishnavi-212/wids-datathon-2026-wildfire-survival/blob/main/vsub6_gbsa_lightgbm_pipeline.ipynb)
 [![Competition](https://img.shields.io/badge/Kaggle-WiDS%20Datathon%202026-20BEFF?logo=kaggle&logoColor=white)](https://www.kaggle.com/)
 [![Team](https://img.shields.io/badge/Team-KLE%20VibeCoders-orange)](https://sites.google.com/kletech.ac.in/klevibecoders/home)
 [![Private LB](https://img.shields.io/badge/Private%20LB-0.96923-brightgreen)](#-leaderboard-performance)
@@ -43,7 +43,7 @@ flowchart LR
 
 ### The data
 
-<img src="docs/images/01_dataset.png" alt="221 training fires: 69 hit a zone, 152 censored; 95 test fires" width="100%">
+<img src="01_dataset.png" alt="221 training fires: 69 hit a zone, 152 censored; 95 test fires" width="100%">
 
 We learn from **221 past fires** whose outcome is known, then predict for **95 new fires**. Each training fire comes with two answers:
 
@@ -54,7 +54,7 @@ We learn from **221 past fires** whose outcome is known, then predict for **95 n
 
 ### The tricky part: censoring
 
-<img src="docs/images/02_censoring.png" alt="Timeline of five example fires showing hits and censored observations" width="100%">
+<img src="02_censoring.png" alt="Timeline of five example fires showing hits and censored observations" width="100%">
 
 Most fires (68.8%) are **censored**: we stopped watching before seeing them hit. That does **not** mean they were safe. Fire C above was tracked for only 20 hours, so we know it hadn't hit by **12h**, but we know nothing about **24h** or later.
 
@@ -119,13 +119,13 @@ flowchart TB
 
 ### Step 3 · Calibrate: make probabilities honest
 
-<img src="docs/images/04_calibration.png" alt="Concept of isotonic calibration: raw scores vs calibrated vs perfect" width="100%">
+<img src="04_calibration.png" alt="Concept of isotonic calibration: raw scores vs calibrated vs perfect" width="100%">
 
 Boosted trees are good at ordering fires but their raw scores can be off: a "0.9" might really be a 70% chance. **Isotonic regression** learns, from out-of-fold predictions, how to reshape the scores so they match how often fires really hit. Since 70% of the score is about calibration, this step matters a lot.
 
 ### Step 4 · Blend the two models
 
-<img src="docs/images/05_blend.png" alt="Blend weights per horizon: 12h 95/5, 24h 92/8, 48h 55/45, 72h fixed" width="100%">
+<img src="05_blend.png" alt="Blend weights per horizon: 12h 95/5, 24h 92/8, 48h 55/45, 72h fixed" width="100%">
 
 Each horizon gets its own mix. GBSA leads at short horizons. At **48h** the two are close to equal, because that's where LightGBM's per-horizon calibration helps most. The 48h weight was picked by search, not by hand (see step 6).
 
@@ -148,11 +148,11 @@ A grid search tries **1,188** combinations of the 48h blend weight and the two s
 
 ## 📈 What the Model Outputs
 
-<img src="docs/images/03_two_fires.png" alt="Predicted threat over time for one high-risk and one low-risk fire" width="100%">
+<img src="03_two_fires.png" alt="Predicted threat over time for one high-risk and one low-risk fire" width="100%">
 
 These are two **real fires from our submission**. The high-risk fire is already **84% likely by 12h** and above 90% by 48h. The low-risk fire stays near **5–6%** until 48h.
 
-<img src="docs/images/06_predictions.png" alt="Average predicted threat by horizon and distribution of 48h predictions" width="100%">
+<img src="06_predictions.png" alt="Average predicted threat by horizon and distribution of 48h predictions" width="100%">
 
 Across all 95 test fires, the average threat grows from **19%** at 12h to **30%** at 48h. The predictions split cleanly into **67 low-risk** fires (~5–6%) and **28 high-risk** fires (66–91% by 48h). That clear separation is what decision-makers need.
 
@@ -181,21 +181,19 @@ The private score (unseen data) is **higher** than the public one, a good sign t
 ## 📁 Repo Structure
 
 ```
-├── notebooks/
-│   └── vsub6_gbsa_lightgbm_pipeline.ipynb   ← full v6 pipeline (features → GBSA + LightGBM → calibration → blend)
-├── docs/images/                              ← charts used in this README
-├── final_submission.csv                      ← v6 predictions submitted to Kaggle (95 fires × 4 horizons)
-├── website-preview.png                       ← preview of the project website
-├── website-preview.mp4                       ← 65-second website walkthrough
-├── LICENSE                                   ← MIT
-├── .gitignore
+├── vsub6_gbsa_lightgbm_pipeline.ipynb   ← full v6 pipeline (features → GBSA + LightGBM → calibration → blend)
+├── final_submission.csv                 ← v6 predictions submitted to Kaggle (95 fires × 4 horizons)
+├── 01_dataset.png … 06_predictions.png  ← charts used in this README
+├── website-preview.png                  ← preview of the project website
+├── website-preview.mp4                  ← 65-second website walkthrough
+├── LICENSE                              ← MIT
 └── README.md
 ```
 
 ## ▶️ Reproduce It
 
 1. Download `train.csv` and `test.csv` from the WiDS Datathon 2026 Kaggle competition. They are **not included here**, following the competition's data rules.
-2. Open the notebook in **[Google Colab](https://colab.research.google.com/github/vaishnavi-212/wids-datathon-2026-wildfire-survival/blob/main/notebooks/vsub6_gbsa_lightgbm_pipeline.ipynb)** and upload both CSV files.
+2. Open the notebook in **[Google Colab](https://colab.research.google.com/github/vaishnavi-212/wids-datathon-2026-wildfire-survival/blob/main/vsub6_gbsa_lightgbm_pipeline.ipynb)** and upload both CSV files.
 3. Run the single cell. It installs `scikit-survival` and `lightgbm`, trains all 270 models, and downloads `submission_rank1.csv` … `submission_rank5.csv`.
 
 > Running locally instead of Colab? `pip install scikit-survival lightgbm pandas scikit-learn`, place the CSVs next to the notebook, and delete the last three lines (`google.colab.files.download`).
@@ -237,7 +235,7 @@ Code released under the [MIT License](LICENSE). Competition data belongs to its 
 ## 🔗 Links
 
 - 🌐 [Project website (full EDA & findings)](https://sites.google.com/kletech.ac.in/klevibecoders/home)
-- 📓 [Pipeline notebook](notebooks/vsub6_gbsa_lightgbm_pipeline.ipynb)
+- 📓 [Pipeline notebook](vsub6_gbsa_lightgbm_pipeline.ipynb)
 - 🏁 [WiDS Datathon (past challenges)](https://www.widsworldwide.org/learn/datathon/past-datathons/)
 - 🏆 [WiDS 2026 Global Datathon winners announcement](https://www.widsworldwide.org/get-inspired/blog/2026-wids-worldwide-global-datathon-winners-announced/)
 
